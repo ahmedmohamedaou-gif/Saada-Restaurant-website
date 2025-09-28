@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مطعم السعادة - تصميم متكامل</title>
+    <meta name="description" content="صفحة بورتفوليو متكاملة لمطعم السعادة باستخدام HTML, CSS, و JavaScript.">
+
+    <style>
+        /* تنسيقات أساسية للغة العربية */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4; /* لون خلفية خفيف */
+            color: #333;
+            text-align: right; /* محاذاة النص لليمين */
+        }
+
+        /* تنسيق الهيدر */
+        .main-header {
+            background-color: #5cb85c; /* لون أخضر جذاب للمطعم */
+            color: white;
+            padding: 20px;
+            display: flex; /* لترتيب العناصر جنبًا إلى جنب */
+            justify-content: space-between; /* تفريق العنوان عن القائمة */
+            align-items: center;
+        }
+
+        /* تنسيق القائمة (Navigation) */
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            display: block;
+        }
+
+        nav ul li a:hover {
+            background-color: #4cae4c;
+            border-radius: 5px;
+        }
+
+        /* تنسيق أقسام الصفحة */
+        section {
+            padding: 40px 20px;
+            margin: 20px auto;
+            max-width: 800px;
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* ظل خفيف */
+            border-radius: 8px;
+        }
+
+        /* تنسيق النموذج (Form) */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button[type="submit"] {
+            background-color: #f0ad4e; /* لون برتقالي لزر الحجز */
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #ec971f;
+        }
+
+        /* تنسيق رسالة التفاعل */
+        .hidden-message {
+            display: none; /* مخفية حتى يظهرها JavaScript */
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .success {
+            background-color: #dff0d8;
+            color: #3c763d;
+        }
+
+        .error {
+            background-color: #f2dede;
+            color: #a94442;
+        }
+
+    </style>
+    </head>
+<body>
+
+    <header class="main-header">
+        <h1>مطعم السعادة</h1>
+        <nav>
+            <ul>
+                <li><a href="#menu">قائمة الطعام</a></li>
+                <li><a href="#booking">احجز الآن</a></li>
+                <li><a href="#contact">اتصل بنا</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section id="booking" class="form-section">
+        <h2>احجز طاولتك الآن</h2>
+        <form id="reservationForm">
+            <div class="form-group">
+                <label for="name">الاسم:</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="email">البريد الإلكتروني:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="date">التاريخ والوقت:</label>
+                <input type="datetime-local" id="date" name="date" required>
+            </div>
+            <button type="submit">تأكيد الحجز</button>
+            <p id="message" class="hidden-message"></p>
+        </form>
+    </section>
+
+    <section id="contact" class="contact-section">
+        <h2>معلومات التواصل</h2>
+        <p>الهاتف: 5678-1234-010</p>
+        <p>العنوان: شارع النور - القاهرة</p>
+    </section>
+
+    <script>
+        // الانتظار حتى يتم تحميل الصفحة بالكامل قبل تشغيل الكود
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('reservationForm');
+            const nameInput = document.getElementById('name');
+            const emailInput = document.getElementById('email');
+            const messageElement = document.getElementById('message');
+
+            form.addEventListener('submit', function(event) {
+                // منع الإرسال الافتراضي للصفحة
+                event.preventDefault();
+
+                // 1. التحقق من صحة المدخلات (Validation)
+                if (nameInput.value.trim() === '') {
+                    showMessage('الرجاء إدخال اسمك.', 'error');
+                    return;
+                }
+
+                if (!validateEmail(emailInput.value)) {
+                    showMessage('الرجاء إدخال بريد إلكتروني صحيح.', 'error');
+                    return;
+                }
+
+                // 2. محاكاة نجاح الحجز (هذا الجزء هو الذي يظهر مهارة الـ JS)
+                showMessage('تم استلام طلب حجزك بنجاح! سيتم تأكيده عبر البريد الإلكتروني.', 'success');
+                form.reset(); // تفريغ حقول النموذج
+            });
+
+            // دالة للتحقق من تنسيق البريد الإلكتروني
+            function validateEmail(email) {
+                // تعبير بسيط للتأكد من وجود @ ونقطة
+                const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return re.test(String(email).toLowerCase());
+            }
+
+            // دالة لإظهار الرسالة وتنسيقها
+            function showMessage(text, type) {
+                messageElement.textContent = text;
+                messageElement.style.display = 'block';
+                
+                // إزالة أي فئات سابقة وإضافة الفئة الجديدة للتنسيق باللون
+                messageElement.classList.remove('success', 'error');
+                messageElement.classList.add(type);
+
+                // إخفاء الرسالة بعد 5 ثوانٍ
+                setTimeout(() => {
+                    messageElement.style.display = 'none';
+                }, 5000);
+            }
+        });
+    </script>
+    </body>
+</html>
